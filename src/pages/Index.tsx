@@ -57,11 +57,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      
+
       <Starfield />
       <Navbar />
       <HeroSection searchQuery={searchQuery} onSearchChange={setSearchQuery} headlines={headlines} />
-      {!loading && <FeaturedCarousel articles={articles.filter((a) => a.thumbnail)} />}
+      <FeaturedCarousel articles={articles.filter((a) => a.thumbnail)} />
       <CategoryTabs active={category} onChange={setCategory} />
       <SortBar sort={sort} onSortChange={setSort} count={filtered.length} />
       {loading ? <SkeletonGrid /> : <NewsGrid articles={filtered} />}
