@@ -1,17 +1,50 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, AlertCircle } from 'lucide-react';
 import { fetchAPOD } from '@/lib/apod';
-import { APODData } from '@/lib/types';
+import { useQuery } from '@tanstack/react-query';
 
 const APODSection = () => {
-  const [apod, setApod] = useState<APODData | null>(null);
+  const { data: apod, isLoading, error } = useQuery({
+    queryKey: ['apod'],
+    queryFn: fetchAPOD,
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+  });
 
-  useEffect(() => {
-    fetchAPOD().then(setApod);
-  }, []);
+  if (error) {
+    return (
+      <section className="relative z-10 max-w-5xl mx-auto px-4 mb-16">
+        <div className="glass-card rounded-2xl p-8 text-center flex flex-col items-center gap-4">
+          <AlertCircle className="text-destructive w-12 h-12" />
+          <div>
+            <h3 className="text-lg font-semibold">Unable to load APOD</h3>
+            <p className="text-muted-foreground text-sm">Please try again later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
-  if (!apod) return null;
+  if (isLoading || !apod) {
+    return (
+      <section className="relative z-10 max-w-5xl mx-auto px-4 mb-16">
+        <h2 className="font-heading text-xl md:text-2xl font-bold mb-6 text-center skeleton-pulse w-64 h-8 mx-auto rounded" />
+        <div className="glass-card rounded-2xl overflow-hidden md:flex min-h-[400px]">
+          <div className="md:w-1/2 skeleton-pulse" />
+          <div className="p-6 md:w-1/2 flex flex-col justify-center space-y-4">
+            <div className="h-4 w-24 skeleton-pulse rounded" />
+            <div className="h-8 w-3/4 skeleton-pulse rounded" />
+            <div className="space-y-2">
+              <div className="h-4 w-full skeleton-pulse rounded" />
+              <div className="h-4 w-full skeleton-pulse rounded" />
+              <div className="h-4 w-full skeleton-pulse rounded" />
+              <div className="h-4 w-2/3 skeleton-pulse rounded" />
+            </div>
+            <div className="h-10 w-40 skeleton-pulse rounded" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <motion.section
