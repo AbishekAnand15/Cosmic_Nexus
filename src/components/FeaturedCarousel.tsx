@@ -12,6 +12,19 @@ const FeaturedCarousel = ({ articles }: { articles: NewsArticle[] }) => {
   useEffect(() => {
     if (isLoading) return;
     const interval = setInterval(() => setCurrent((p) => (p + 1) % items.length), 6000);
+
+    // Dynamic Preload for LCP discovery
+    const firstImage = items.find(item => item.thumbnail)?.thumbnail;
+    if (firstImage) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = firstImage;
+      // @ts-ignore
+      link.fetchPriority = 'high';
+      document.head.appendChild(link);
+    }
+
     return () => clearInterval(interval);
   }, [items.length, isLoading]);
 
