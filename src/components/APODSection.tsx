@@ -59,9 +59,24 @@ const APODSection = () => {
       <div className="glass-card rounded-2xl overflow-hidden md:flex">
         <div className="md:w-1/2">
           {apod.media_type === 'image' ? (
-            <img src={apod.url} alt={apod.title} className="w-full h-64 md:h-full object-cover" />
+            <img
+              src={apod.url}
+              alt={apod.title}
+              className="w-full h-64 md:h-full object-cover"
+              width={800}
+              height={600}
+              loading="lazy"
+            />
           ) : (
-            <iframe src={apod.url} title={apod.title} className="w-full h-64 md:h-full" allowFullScreen />
+            <iframe
+              src={apod.url}
+              title={apod.title}
+              className="w-full h-64 md:h-full"
+              allowFullScreen
+              width={800}
+              height={600}
+              loading="lazy"
+            />
           )}
         </div>
         <div className="p-6 md:w-1/2 flex flex-col justify-center">

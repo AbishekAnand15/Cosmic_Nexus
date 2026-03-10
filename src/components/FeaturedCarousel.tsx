@@ -27,10 +27,19 @@ const FeaturedCarousel = ({ articles }: { articles: NewsArticle[] }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute inset-0"
+            className="absolute inset-0 aspect-video md:aspect-[21/9]"
           >
             {article.thumbnail ? (
-              <img src={article.thumbnail} alt="" className="w-full h-full object-cover opacity-40" />
+              <img
+                src={article.thumbnail}
+                alt=""
+                className="w-full h-full object-cover opacity-40"
+                loading="eager"
+                // @ts-ignore - fetchpriority is a new attribute
+                fetchpriority="high"
+                width={1200}
+                height={600}
+              />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20" />
             )}

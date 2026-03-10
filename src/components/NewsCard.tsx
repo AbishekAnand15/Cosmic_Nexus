@@ -16,7 +16,7 @@ const NewsCard = ({ article, index }: { article: NewsArticle; index: number }) =
       className="glass-card rounded-xl overflow-hidden flex flex-col"
     >
       {/* Thumbnail */}
-      <div className="relative h-48 overflow-hidden bg-muted">
+      <div className="relative aspect-video overflow-hidden bg-muted">
         {article.thumbnail && !imgError ? (
           <img
             src={article.thumbnail}
@@ -24,6 +24,8 @@ const NewsCard = ({ article, index }: { article: NewsArticle; index: number }) =
             className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
             onError={() => setImgError(true)}
             loading="lazy"
+            width={400}
+            height={225}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-card to-muted">
@@ -35,6 +37,8 @@ const NewsCard = ({ article, index }: { article: NewsArticle; index: number }) =
             src={article.sourceLogo}
             alt={article.source}
             className="w-4 h-4 rounded-full"
+            width={16}
+            height={16}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
           <span className="text-xs font-accent text-foreground/80">{article.source}</span>
@@ -54,7 +58,7 @@ const NewsCard = ({ article, index }: { article: NewsArticle; index: number }) =
             onClick={() => setExpanded(!expanded)}
             className="inline-flex items-center gap-1 text-xs font-accent text-accent hover:text-primary transition-colors mb-3 self-start"
           >
-            {expanded ? 'Show less' : 'Read more'} 
+            {expanded ? 'Show less' : 'Read more'}
             {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
         )}
