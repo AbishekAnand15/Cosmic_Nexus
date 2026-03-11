@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Info, Thermometer, Ruler, Zap } from "lucide-react";
 
 interface CelestialObject {
   id: string;
@@ -7,31 +8,125 @@ interface CelestialObject {
   subtitle: string;
   category: string;
   render: string;
+  description: string;
+  facts: {
+    temp?: string;
+    size?: string;
+    feature?: string;
+  };
 }
 
 const celestialObjects: CelestialObject[] = [
-  { id: "meteoroid", name: "Meteoroid", subtitle: "Space Debris", category: "Solar System", render: "meteoroid" },
-  { id: "asteroid", name: "Asteroid", subtitle: "Minor Planet", category: "Solar System", render: "asteroid" },
-  { id: "comet", name: "Comet", subtitle: "Icy Body", category: "Solar System", render: "comet" },
-  { id: "dwarf-planet", name: "Dwarf Planet", subtitle: "Sub-Planetary", category: "Solar System", render: "dwarfplanet" },
-  { id: "moon", name: "Moon", subtitle: "Natural Satellite", category: "Solar System", render: "moon" },
-  { id: "planet", name: "Planet", subtitle: "Major Body", category: "Solar System", render: "planet" },
-  { id: "brown-dwarf", name: "Brown Dwarf", subtitle: "Failed Star", category: "Stellar", render: "browndwarf" },
-  { id: "red-dwarf", name: "Red Dwarf", subtitle: "Small Star", category: "Stellar", render: "reddwarf" },
-  { id: "star", name: "Star", subtitle: "Main Sequence", category: "Stellar", render: "star" },
-  { id: "giant-star", name: "Giant Star", subtitle: "Evolved Star", category: "Stellar", render: "giantstar" },
-  { id: "white-dwarf", name: "White Dwarf", subtitle: "Stellar Remnant", category: "Extreme", render: "whitedwarf" },
-  { id: "neutron-star", name: "Neutron Star", subtitle: "Collapsed Star", category: "Extreme", render: "neutronstar" },
-  { id: "pulsar", name: "Pulsar", subtitle: "Rotating Neutron Star", category: "Extreme", render: "pulsar" },
-  { id: "black-hole", name: "Black Hole", subtitle: "Singularity", category: "Extreme", render: "blackhole" },
-  { id: "quasar", name: "Quasar", subtitle: "Active Galactic Nucleus", category: "Extreme", render: "quasar" },
-  { id: "magnetar", name: "Magnetar", subtitle: "Magnetic Neutron Star", category: "Extreme", render: "magnetar" },
-  { id: "nebula", name: "Nebula", subtitle: "Gas Cloud", category: "Large-Scale", render: "nebula" },
-  { id: "supernova", name: "Supernova Remnant", subtitle: "Explosion Debris", category: "Large-Scale", render: "supernova" },
-  { id: "star-cluster", name: "Star Cluster", subtitle: "Stellar Group", category: "Large-Scale", render: "starcluster" },
-  { id: "galaxy", name: "Galaxy", subtitle: "Star System", category: "Large-Scale", render: "galaxy" },
-  { id: "galaxy-cluster", name: "Galaxy Cluster", subtitle: "Cosmic Structure", category: "Large-Scale", render: "galaxycluster" },
-  { id: "cosmic-web", name: "Cosmic Web", subtitle: "Universe Structure", category: "Large-Scale", render: "cosmicweb" },
+  { 
+    id: "meteoroid", name: "Meteoroid", subtitle: "Space Debris", category: "Solar System", render: "meteoroid",
+    description: "Meteoroids are small rocky or metallic bodies in outer space. They are significantly smaller than asteroids, ranging in size from small grains to one-meter-wide objects.",
+    facts: { temp: "Varies", size: "1mm to 1m", feature: "Fast moving" }
+  },
+  { 
+    id: "asteroid", name: "Asteroid", subtitle: "Minor Planet", category: "Solar System", render: "asteroid",
+    description: "Asteroids are rocky, airless remnants left over from the early formation of our solar system about 4.6 billion years ago. Most of them can be found orbiting the Sun between Mars and Jupiter.",
+    facts: { temp: "-73°C", size: "1m to 940km", feature: "Irregular shape" }
+  },
+  { 
+    id: "comet", name: "Comet", subtitle: "Icy Body", category: "Solar System", render: "comet",
+    description: "Comets are cosmic snowballs of frozen gases, rock, and dust that orbit the Sun. When a comet's orbit brings it close to the Sun, it heats up and spews dust and gases into a giant glowing head.",
+    facts: { temp: "-200°C", size: "Up to 10km nucleus", feature: "Gas & Dust tail" }
+  },
+  { 
+    id: "dwarf-planet", name: "Dwarf Planet", subtitle: "Sub-Planetary", category: "Solar System", render: "dwarfplanet",
+    description: "Dwarf planets are celestial bodies that orbit the Sun and are massive enough to be spherical, but have not cleared their orbital path of other debris.",
+    facts: { temp: "-230°C", size: "Varies (e.g. Pluto)", feature: "Spherical but small" }
+  },
+  { 
+    id: "moon", name: "Moon", subtitle: "Natural Satellite", category: "Solar System", render: "moon",
+    description: "Earth's Moon is the only place beyond Earth where humans have set foot. It is the fifth largest moon in the solar system and is responsible for Earth's tides.",
+    facts: { temp: "-173°C to 127°C", size: "3,474 km diameter", feature: "Tidal locking" }
+  },
+  { 
+    id: "planet", name: "Planet", subtitle: "Major Body", category: "Solar System", render: "planet",
+    description: "Planets are large celestial bodies that orbit stars, are spherical due to gravity, and have cleared their neighborhoods of other objects.",
+    facts: { temp: "Varies widely", size: "Thousands of km", feature: "Active geology" }
+  },
+  { 
+    id: "brown-dwarf", name: "Brown Dwarf", subtitle: "Failed Star", category: "Stellar", render: "browndwarf",
+    description: "Brown dwarfs are objects too big to be planets but too small to be stars. They are sometimes called 'failed stars' because they don't have enough mass to sustain hydrogen fusion.",
+    facts: { temp: "-20°C to 2000°C", size: "13 to 80 Jupiters", feature: "Infrared glow" }
+  },
+  { 
+    id: "red-dwarf", name: "Red Dwarf", subtitle: "Small Star", category: "Stellar", render: "reddwarf",
+    description: "Red dwarfs are the most common type of star in our galaxy. They are small and relatively cool, burning their fuel so slowly that they can live for trillions of years.",
+    facts: { temp: "2,000 to 3,500 K", size: "0.08 to 0.5 Suns", feature: "Extremely long life" }
+  },
+  { 
+    id: "star", name: "Star", subtitle: "Main Sequence", category: "Stellar", render: "star",
+    description: "Main sequence stars like our Sun are powered by the nuclear fusion of hydrogen into helium in their cores. This process releases vast amounts of energy as light and heat.",
+    facts: { temp: "5,778 K (Sun)", size: "1.4 million km (Sun)", feature: "Hydrogen fusion" }
+  },
+  { 
+    id: "giant-star", name: "Giant Star", subtitle: "Evolved Star", category: "Stellar", render: "giantstar",
+    description: "Giant stars are stars that have exhausted the hydrogen in their cores and have begun fusing heavier elements, causing them to expand to many times their original size.",
+    facts: { temp: "3,000 to 5,000 K", size: "10 to 100 Suns", feature: "Core expansion" }
+  },
+  { 
+    id: "white-dwarf", name: "White Dwarf", subtitle: "Stellar Remnant", category: "Extreme", render: "whitedwarf",
+    description: "A white dwarf is what stars like the Sun become after they have exhausted their nuclear fuel and shed their outer layers. They are incredibly dense, with the mass of the Sun in the size of Earth.",
+    facts: { temp: "100,000 K (Initial)", size: "~12,000 km", feature: "Extreme density" }
+  },
+  { 
+    id: "neutron-star", name: "Neutron Star", subtitle: "Collapsed Star", category: "Extreme", render: "neutronstar",
+    description: "Neutron stars are the collapsed cores of massive stars. They are the densest objects in the universe; a single teaspoon of neutron star material would weigh a billion tons.",
+    facts: { temp: "1 million K", size: "20 km diameter", feature: "Pure neutrons" }
+  },
+  { 
+    id: "pulsar", name: "Pulsar", subtitle: "Rotating Neutron Star", category: "Extreme", render: "pulsar",
+    description: "Pulsars are highly magnetized, rotating neutron stars that emit beams of electromagnetic radiation out of their magnetic poles, appearing as pulses of light.",
+    facts: { temp: "Very high", size: "20 km diameter", feature: "Rapid rotation" }
+  },
+  { 
+    id: "black-hole", name: "Black Hole", subtitle: "Singularity", category: "Extreme", render: "blackhole",
+    description: "Black holes are regions of space where gravity is so strong that nothing, not even light, can escape. At the center lies a singularity of infinite density.",
+    facts: { temp: "Abs. Zero (Ambient)", size: "Schwarzschild radius", feature: "Event horizon" }
+  },
+  { 
+    id: "quasar", name: "Quasar", subtitle: "Active Galactic Nucleus", category: "Extreme", render: "quasar",
+    description: "Quasars are the brightest and most distant objects in the universe. They are powered by supermassive black holes at the centers of distant galaxies accreting large amounts of matter.",
+    facts: { temp: "Millions of degrees", size: "Solar system size", feature: "Luminosity" }
+  },
+  { 
+    id: "magnetar", name: "Magnetar", subtitle: "Magnetic Neutron Star", category: "Extreme", render: "magnetar",
+    description: "Magnetars are a type of neutron star with an extremely powerful magnetic field — a quadrillion times stronger than Earth's. They are known for occasional bursts of high-energy X-rays.",
+    facts: { temp: "Very high", size: "20 km diameter", feature: "Ultra-strong B-field" }
+  },
+  { 
+    id: "nebula", name: "Nebula", subtitle: "Gas Cloud", category: "Large-Scale", render: "nebula",
+    description: "A nebula is a giant cloud of dust and gas in space. Some nebulae come from the gas and dust thrown out by the explosion of a dying star, while others are regions where new stars are beginning to form.",
+    facts: { temp: "10 K to 10,000 K", size: "Light years wide", feature: "Stellar nursery" }
+  },
+  { 
+    id: "supernova", name: "Supernova Remnant", subtitle: "Explosion Debris", category: "Large-Scale", render: "supernova",
+    description: "A supernova remnant is the structure resulting from the explosion of a star in a supernova. It consists of ejected material expanding from the explosion site and interstellar material it has swept up.",
+    facts: { temp: "Millions of degrees", size: "Dozens of light years", feature: "Heavy elements" }
+  },
+  { 
+    id: "star-cluster", name: "Star Cluster", subtitle: "Stellar Group", category: "Large-Scale", render: "starcluster",
+    description: "Star clusters are groups of stars that are gravitationally bound. There are two main types: globular clusters (old stars) and open clusters (young stars).",
+    facts: { temp: "Varies", size: "10-100 light years", feature: "Gravitational binding" }
+  },
+  { 
+    id: "galaxy", name: "Galaxy", subtitle: "Star System", category: "Large-Scale", render: "galaxy",
+    description: "A galaxy is a huge collection of gas, dust, and billions of stars and their solar systems, all held together by gravity. Our galaxy is the Milky Way.",
+    facts: { temp: "Varies", size: "100,000 light years", feature: "Supermassive BH core" }
+  },
+  { 
+    id: "galaxy-cluster", name: "Galaxy Cluster", subtitle: "Cosmic Structure", category: "Large-Scale", render: "galaxycluster",
+    description: "Galaxy clusters are the largest objects in the universe held together by gravity. They contain hundreds to thousands of galaxies, vast amounts of hot gas, and dark matter.",
+    facts: { temp: "10 to 100 million K", size: "Millions of light years", feature: "Dark matter dominated" }
+  },
+  { 
+    id: "cosmic-web", name: "Cosmic Web", subtitle: "Universe Structure", category: "Large-Scale", render: "cosmicweb",
+    description: "The cosmic web is the fundamental structure of the universe, consisting of interlocking filaments of dark matter and galaxies that span the vast voids between them.",
+    facts: { temp: "Varies", size: "Billions of light years", feature: "Universal backbone" }
+  },
 ];
 
 function CelestialCanvas({ type, size = 80 }: { type: string; size?: number }) {
@@ -499,6 +594,7 @@ const categories = ["All", "Solar System", "Stellar", "Extreme", "Large-Scale"];
 export default function CelestialObjects() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [hovered, setHovered] = useState<string | null>(null);
+  const [selectedObject, setSelectedObject] = useState<CelestialObject | null>(null);
 
   const filtered = activeCategory === "All" ? celestialObjects : celestialObjects.filter(o => o.category === activeCategory);
 
@@ -545,7 +641,7 @@ export default function CelestialObjects() {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground max-w-2xl mx-auto italic font-body"
           >
-            From meteoroids to the cosmic web — rendered in real time through procedural animations.
+            From meteoroids to the cosmic web — rendered in real time through procedural animations. Click an object to explore.
           </motion.p>
 
           {/* Category filters */}
@@ -575,6 +671,7 @@ export default function CelestialObjects() {
               className="obj-card flex flex-col items-center gap-4"
               onMouseEnter={() => setHovered(obj.id)}
               onMouseLeave={() => setHovered(null)}
+              onClick={() => setSelectedObject(obj)}
             >
               {/* Orb container */}
               <div 
@@ -604,6 +701,103 @@ export default function CelestialObjects() {
           ))}
         </div>
       </div>
+
+      {/* Information Modal */}
+      <AnimatePresence>
+        {selectedObject && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedObject(null)}
+              className="absolute inset-0 bg-background/80 backdrop-blur-md"
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl overflow-y-auto max-h-[90vh]"
+            >
+              <button 
+                onClick={() => setSelectedObject(null)}
+                className="absolute top-6 right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors z-10"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="flex flex-col md:flex-row gap-8 p-8 md:p-12">
+                {/* Visual Side */}
+                <div className="flex flex-col items-center gap-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-accent/30 blur-3xl opacity-50 rounded-full" />
+                    <div className="relative z-10">
+                      <CelestialCanvas type={selectedObject.render} size={200} />
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <span className="text-[10px] tracking-[0.2em] font-accent text-accent uppercase">{selectedObject.category}</span>
+                    <h3 className="font-heading text-2xl font-bold">{selectedObject.name}</h3>
+                    <p className="text-sm text-muted-foreground italic font-body">{selectedObject.subtitle}</p>
+                  </div>
+                </div>
+
+                {/* Info Side */}
+                <div className="flex-1 space-y-8">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 text-accent">
+                      <Info size={16} />
+                      <span className="text-xs font-accent tracking-wider uppercase">Description</span>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed font-body">
+                      {selectedObject.description}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {selectedObject.facts.temp && (
+                      <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1">
+                        <div className="flex items-center gap-2 text-orange-400">
+                          <Thermometer size={14} />
+                          <span className="text-[10px] font-accent uppercase tracking-wider">Temperature</span>
+                        </div>
+                        <div className="text-sm font-heading font-medium">{selectedObject.facts.temp}</div>
+                      </div>
+                    )}
+                    {selectedObject.facts.size && (
+                      <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1">
+                        <div className="flex items-center gap-2 text-blue-400">
+                          <Ruler size={14} />
+                          <span className="text-[10px] font-accent uppercase tracking-wider">Scale</span>
+                        </div>
+                        <div className="text-sm font-heading font-medium">{selectedObject.facts.size}</div>
+                      </div>
+                    )}
+                    {selectedObject.facts.feature && (
+                      <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1 sm:col-span-2">
+                        <div className="flex items-center gap-2 text-purple-400">
+                          <Zap size={14} />
+                          <span className="text-[10px] font-accent uppercase tracking-wider">Key Feature</span>
+                        </div>
+                        <div className="text-sm font-heading font-medium">{selectedObject.facts.feature}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  <button 
+                    onClick={() => setSelectedObject(null)}
+                    className="w-full py-4 rounded-2xl bg-white text-black font-heading font-bold text-sm tracking-widest uppercase hover:bg-accent hover:text-white transition-all duration-300"
+                  >
+                    Close Observation
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
