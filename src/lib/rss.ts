@@ -20,7 +20,7 @@ export async function fetchRSSFeed(sourceIndex: number): Promise<NewsArticle[]> 
   if (!source) return [];
 
   try {
-    const res = await fetch(`${RSS2JSON_BASE}?rss_url=${encodeURIComponent(source.url)}`);
+    const res = await fetch(`/api/news?url=${encodeURIComponent(source.url)}`);
     if (!res.ok) return [];
     const data = await res.json();
     if (data.status !== 'ok' || !data.items) return [];
