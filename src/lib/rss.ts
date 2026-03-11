@@ -44,13 +44,13 @@ export async function fetchRSSFeed(sourceIndex: number): Promise<NewsArticle[]> 
 }
 
 export async function fetchAllFeeds(): Promise<NewsArticle[]> {
-  const promises = RSS_SOURCES.map((_, i) => fetchRSSFeed(i));
-  const results = await Promise.allSettled(promises);
-  const articles: NewsArticle[] = [];
-  for (const r of results) {
-    if (r.status === 'fulfilled') articles.push(...r.value);
+  try {
+    const res = await fetch('/api/all-news');
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
   }
-  return articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 }
 
 function stripHtml(html: string): string {
