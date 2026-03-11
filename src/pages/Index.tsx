@@ -10,7 +10,7 @@ import SkeletonGrid from '@/components/SkeletonGrid';
 import APODSection from '@/components/APODSection';
 import ISSTracker from '@/components/ISSTracker';
 
-import PlanetComparison from '@/components/PlanetComparison';
+import CelestialObjects from '@/components/CelestialObjects';
 
 import NewsletterSection from '@/components/NewsletterSection';
 import Footer from '@/components/Footer';
@@ -67,7 +67,7 @@ const Index = () => {
       {loading ? <SkeletonGrid /> : <NewsGrid articles={filtered} />}
       <APODSection />
       <ISSTracker />
-      <PlanetComparison />
+      <CelestialObjects />
 
 
       <NewsletterSection />
