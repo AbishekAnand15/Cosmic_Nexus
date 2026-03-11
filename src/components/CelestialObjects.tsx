@@ -599,14 +599,14 @@ export default function CelestialObjects() {
   const filtered = activeCategory === "All" ? celestialObjects : celestialObjects.filter(o => o.category === activeCategory);
 
   return (
-    <section className="relative py-20 overflow-hidden" id="observatory">
+    <section className="relative py-20 overflow-hidden font-body" id="observatory">
       <style>{`
         @keyframes twinkle { 0%,100%{opacity:0.15} 50%{opacity:0.7} }
         @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         .obj-card { transition: transform 0.3s ease, filter 0.3s ease; cursor: pointer; }
         .obj-card:hover { transform: translateY(-6px) scale(1.05); filter: brightness(1.2); }
         .cat-btn { border: 1px solid rgba(180,200,255,0.2); background: transparent; color: rgba(200,210,255,0.7);
-          padding: 7px 20px; border-radius: 20px; cursor: pointer; font-family: 'Cinzel', serif;
+          padding: 7px 20px; border-radius: 20px; cursor: pointer; font-family: 'Exo 2', sans-serif;
           font-size: 11px; letter-spacing: 1px; transition: all 0.2s; }
         .cat-btn:hover { background: rgba(100,130,255,0.15); color: white; border-color: rgba(180,200,255,0.5); }
         .cat-btn.active { background: rgba(120,150,255,0.25); color: white; border-color: rgba(180,200,255,0.6); }
